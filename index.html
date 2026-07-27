@@ -1,0 +1,229 @@
+﻿<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>FacePlay × Codex｜AI 短影音製作技術教學</title>
+  <style>
+    :root{
+      --afa-green:#A4D495;--afa-green-dark:#1F3A22;--afa-yellow:#F3E5AB;
+      --afa-white:#FFFFFF;--afa-oat:#FAFAF7;--afa-code:#F0F4EF;--text:#2D312E;
+      --muted:#657068;--line:#DCE7DA;--larva-red:#E5392F;--larva-yellow:#F9D71C;
+      --larva-orange:#F28A24;--shadow:0 12px 36px rgba(45,49,46,.09);
+    }
+    *{box-sizing:border-box}html{scroll-behavior:smooth}
+    body{margin:0;background:var(--afa-oat);color:var(--text);font:18px/1.8 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,"Noto Sans TC","Microsoft JhengHei",sans-serif}
+    img{display:block;max-width:100%;height:auto}a{color:var(--afa-green-dark)}
+    .wrap{width:min(1040px,90vw);margin:auto}
+    .hero{padding:64px 0;background:linear-gradient(135deg,#fff 0 58%,#edf6ea 58% 100%);border-bottom:8px solid var(--afa-green)}
+    .hero-grid{display:grid;grid-template-columns:1fr minmax(270px,390px);align-items:center;gap:56px}
+    .eyebrow{display:inline-flex;align-items:center;gap:8px;padding:6px 13px;border-radius:999px;background:var(--afa-yellow);font-weight:800;font-size:14px;letter-spacing:.04em}
+    h1{margin:20px 0;font-size:clamp(32px,4vw,40px);line-height:1.25;color:var(--afa-green-dark)}
+    h1 .larva{color:var(--larva-red)}.hero p{font-size:20px;margin-bottom:24px}
+    .hero img{border-radius:18px;box-shadow:var(--shadow);max-height:620px;margin:auto}
+    .brand-line{display:flex;flex-wrap:wrap;gap:8px}.chip{padding:5px 11px;border-radius:999px;background:#fff;border:1px solid var(--line);font-size:14px;font-weight:700}
+    .chip.red{border-color:#f2b0aa;color:#a9221a}.chip.yellow{border-color:#e7cd30;color:#685800}
+    nav{position:sticky;top:0;z-index:10;background:#fffffff2;backdrop-filter:blur(14px);border-bottom:1px solid var(--line)}
+    nav .wrap{display:flex;gap:22px;overflow:auto;padding:13px 0;white-space:nowrap}nav a{text-decoration:none;font-weight:800;font-size:16px}
+    section{padding:68px 0}section:nth-child(even){background:#fff}
+    h2{font-size:clamp(26px,3.2vw,34px);line-height:1.35;color:var(--afa-green-dark);margin:0 0 24px;padding-bottom:10px;border-bottom:2px solid #E2F0D9}
+    h3{font-size:24px;line-height:1.45;color:var(--afa-green-dark);margin:0 0 12px}.lead{font-size:20px;color:var(--muted);margin-bottom:30px}
+    p{margin:0 0 24px}.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:22px}
+    .card{background:#fff;border:1px solid var(--line);border-radius:12px;padding:28px;box-shadow:var(--shadow)}
+    .card.green{border-top:7px solid var(--afa-green)}.card.larva{border-top:7px solid var(--larva-red)}
+    .step{display:grid;grid-template-columns:54px 1fr;gap:18px;margin:34px 0}.num{width:46px;height:46px;display:grid;place-items:center;border-radius:50%;background:var(--afa-green);color:var(--afa-green-dark);font-weight:900}
+    .note{background:var(--afa-yellow);border-left:6px solid #d8bd54;border-radius:8px;padding:18px 22px;margin:26px 0}.note.red{background:#fff0ee;border-color:var(--larva-red)}
+    .inputs{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;margin:28px 0}.input-card{margin:0;background:#fff;border:1px solid var(--line);border-radius:12px;overflow:hidden;box-shadow:var(--shadow)}.input-card img{width:100%;aspect-ratio:4/5;object-fit:contain;background:#fff}.input-card figcaption{padding:13px 15px;font-weight:800;text-align:center}.input-card:nth-child(1){border-top:6px solid var(--larva-red)}.input-card:nth-child(2){border-top:6px solid var(--larva-yellow)}.input-card:nth-child(3){border-top:6px solid var(--afa-green)}
+    .figure{margin:32px 0;background:#fff;border:1px solid var(--line);padding:12px;border-radius:12px;box-shadow:var(--shadow)}.figure img{width:100%;border-radius:7px}.figure figcaption{padding:12px 8px 3px;color:var(--muted)}
+    pre{white-space:pre-wrap;word-break:break-word;margin:12px 0 28px;padding:22px;border:1px solid #d9e4d7;border-radius:8px;background:var(--afa-code);color:var(--text);font:16px/1.75 Consolas,"Noto Sans TC","Microsoft JhengHei",monospace}
+    code{background:var(--afa-code);padding:2px 5px;border-radius:4px}.copy-title{display:flex;align-items:center;gap:10px;margin:26px 0 8px;font-weight:900;color:var(--afa-green-dark)}.copy-title:before{content:"可複製";font-size:12px;background:var(--afa-green);padding:3px 8px;border-radius:999px}
+    .check{list-style:none;padding:0;margin:0}.check li{position:relative;padding:7px 0 7px 30px}.check li:before{content:"✓";position:absolute;left:0;color:#367444;font-weight:900}
+    .wrong{background:#fff1ef;border:1px solid #efc3be;border-radius:8px;padding:18px;margin-bottom:18px}.right{background:#eef7eb;border:1px solid #c5dfbd;border-radius:8px;padding:18px}
+    .story{border-left:4px solid var(--afa-green);padding-left:22px;margin:25px 0}.story strong{color:var(--afa-green-dark)}
+    footer{padding:42px 0;background:var(--afa-green-dark);color:#fff;text-align:center}
+    @media(max-width:780px){.hero-grid,.grid{grid-template-columns:1fr}.hero{padding:40px 0}.inputs{grid-template-columns:1fr}.input-card img{aspect-ratio:auto;max-height:520px}.step{grid-template-columns:46px 1fr}}
+  </style>
+</head>
+<body>
+  <header class="hero">
+    <div class="wrap hero-grid">
+      <div>
+        <span class="eyebrow">零基礎 AI 短影音教學</span>
+        <h1>用 FacePlay 生成完整分鏡<br>再用 <span class="larva">Codex 剪成短影音</span></h1>
+        <p>不用學剪輯軟體：準備三張參考圖與一份分鏡文字，先用 FacePlay 生成影片，再用日常說話的方式請 Codex 幫你挑片段、加字幕、修改並輸出。</p>
+        <div class="brand-line"><span class="chip">AFA 開心果嫩綠</span><span class="chip">AFA 香草奶黃</span><span class="chip red">Larva 紅</span><span class="chip yellow">Larva 黃</span></div>
+      </div>
+      <img src="Larva-AI-video-cover-v2.png" alt="女主角與 Larva 紅黃角色的 AI 剪片實戰封面">
+    </div>
+  </header>
+
+  <nav><div class="wrap">
+    <a href="#flow">製程總覽</a><a href="#faceplay">FacePlay 生成</a><a href="#script">完整提示詞</a><a href="#codex">Codex 專案</a><a href="#editing">剪輯需求</a><a href="#revise">後續修正</a><a href="#qa">正式輸出</a>
+  </div></nav>
+
+  <main>
+    <section id="flow">
+      <div class="wrap">
+        <h2>01｜先看流程：從三張照片到完成短影音</h2>
+        <p class="lead">整個流程分成兩個階段：FacePlay 負責依照參考圖與文字生成畫面，Codex 負責把生成結果整理成適合發布的短影音。跟著下面步驟做即可。</p>
+        <div class="grid">
+          <article class="card green"><h3>FacePlay：素材生成</h3><ul class="check"><li>上傳紅蟲參考圖</li><li>上傳黃蟲參考圖</li><li>上傳女主角照片</li><li>貼入三個以上連續分鏡</li><li>設定 9:16，直接生成整段影片</li></ul></article>
+          <article class="card larva"><h3>Codex：剪輯與修正</h3><ul class="check"><li>盤點多支 FacePlay 成品</li><li>從不同版本挑選最佳動作</li><li>重組為 35–40 秒完整故事</li><li>加入字幕、音效、放大與結尾卡</li><li>依截圖與回饋精準修正</li></ul></article>
+        </div>
+        <div class="note"><strong>分工原則：</strong>建議用相同提示詞生成幾個版本。畫面不必每一秒都完美，因為下一步可以請 Codex 從不同版本挑出最好看的片段。</div>
+      </div>
+    </section>
+
+    <section id="faceplay">
+      <div class="wrap">
+        <h2>02｜準備三張圖，交給 FacePlay 生成影片</h2>
+        <p class="lead">準備紅色角色、黃色角色和女主角各一張清楚照片。圖片主體越單純、臉部越清楚，生成結果通常越穩定。</p>
+        <div class="inputs">
+          <figure class="input-card"><img src="assets/faceplay-input-red.jpg" alt="FacePlay 紅蟲參考圖"><figcaption>1. 紅蟲參考圖</figcaption></figure>
+          <figure class="input-card"><img src="assets/faceplay-input-yellow.jpg" alt="FacePlay 黃蟲參考圖"><figcaption>2. 黃蟲參考圖</figcaption></figure>
+          <figure class="input-card"><img src="assets/faceplay-input-host.png" alt="FacePlay 女主角參考照片"><figcaption>3. 女主角照片</figcaption></figure>
+        </div>
+        <div class="step"><div class="num">1</div><div><h3>進入 FacePlay 生成頁</h3><p>在 Discover 的輸入區加入三張參考圖，選擇影片生成功能，畫面比例設為 <strong>9:16</strong>。模型名稱與點數可能隨平台更新，實際以當下介面為準。</p></div></div>
+        <figure class="figure"><img src="assets/faceplay-step-create.png" alt="FacePlay Discover 生成頁面"><figcaption>FacePlay 的生成入口：加入圖片、選擇生成模式與 9:16 比例，再貼入多分鏡文字。</figcaption></figure>
+        <div class="step"><div class="num">2</div><div><h3>一次貼入多個分鏡</h3><p>每個分鏡都寫清楚秒數、人物服裝、角色動作、景別與風格。FacePlay 會把文字稿視為同一支影片的時間順序，而不是三次獨立工作。</p></div></div>
+        <div class="step"><div class="num">3</div><div><h3>直接生成約 15 秒完整影片</h3><p>生成完成後，先在 Works 檢查人物、紅黃角色、服裝色彩與分鏡銜接。滿意就下載；不滿意可保留同一份文字稿，只針對容易失真的描述調整後再生成一版。</p></div></div>
+        <figure class="figure"><img src="assets/faceplay-step-result.png" alt="FacePlay 多分鏡影片生成結果"><figcaption>實際生成結果：上方保留整份分鏡文字，下方直接得到一支包含多段情節的直式影片。</figcaption></figure>
+      </div>
+    </section>
+
+    <section id="script">
+      <div class="wrap">
+        <h2>03｜把這段分鏡文字貼進 FacePlay</h2>
+        <p class="lead">把下面三段文字一起貼進同一個提示詞欄位，不用分三次操作。FacePlay 會依照順序生成開場、紅色造型與黃色造型。</p>
+        <div class="story"><strong>分鏡 1｜0–3 秒｜雙色抉擇 Hook</strong><br>一個 9:16 的時尚短影片。一位留著長髮、氣質高雅的亞洲女性，穿著精緻的全白服裝，表情冷靜地站在乾淨的攝影棚鏡子前。她左手拿著一件鮮紅色的衣服，右手拿著一件鮮黃色的衣服。在她身邊，一隻紅色的小卡通蟲子和一隻黃色的小卡通蟲子從衣服後面探出頭來，激動地揮手指著自己。<br><strong>風格：</strong>高級時裝大片、乾淨的攝影棚燈光、高解析度。</div>
+        <div class="story"><strong>分鏡 2｜3–8 秒｜紅色提案</strong><br>9:16 中景鏡頭。這位高雅的長髮亞洲女性換上了一套極具剪裁感、氣場強大的全紅設計師套裝。她維持冷艷、毫無表情的時尚名模臉，對著鏡頭連續變換三個時尚姿勢。在她肩膀上，一隻紅色的小卡通蟲子正模仿時尚總監，一邊點頭、一邊托著下巴指揮。<br><strong>風格：</strong>Vogue 雜誌封面風格、強烈閃光燈效果、高級紅色背景。</div>
+        <div class="story"><strong>分鏡 3｜8–13 秒｜黃色提案</strong><br>9:16 中景鏡頭。轉場後，這位高雅的長髮亞洲女性換成了一套明亮、精緻的柔和淺黃色時尚套裝。她溫柔地轉身，對著鏡頭展現一個優雅的淡淡微笑。在她另一側的肩膀上，一隻黃色的小卡通蟲子正得意地跳舞。<br><strong>風格：</strong>溫暖柔和的採光、簡約的黃色攝影棚背景、乾淨舒適的視覺。</div>
+        <div class="copy-title">整段貼入版本</div>
+        <pre>【0–3 秒｜Hook｜雙色抉擇】
+一個 9:16 的時尚短影片。一位留著長髮、氣質高雅的亞洲女性，穿著精緻的全白服裝，表情冷靜地站在乾淨的攝影棚鏡子前。她左手拿著一件鮮紅色的衣服，右手拿著一件鮮黃色的衣服。在她身邊，一隻紅色的小卡通蟲子和一隻黃色的小卡通蟲子從衣服後面探出頭來，激動地揮手指著自己。風格：高級時裝大片、乾淨攝影棚燈光、高解析度。
+
+【3–8 秒｜紅色提案】
+9:16 中景鏡頭。女主角換上剪裁感強烈的全紅設計師套裝，維持冷艷的時尚名模表情，連續變換三個姿勢。紅色小卡通蟲子站在她肩膀上模仿時尚總監，點頭、托下巴並指揮。風格：Vogue 雜誌封面、強烈閃光燈、高級紅色背景。
+
+【8–13 秒｜黃色提案】
+9:16 中景鏡頭。轉場後，女主角換成明亮精緻的柔和淺黃色時尚套裝，溫柔轉身並對鏡頭淡淡微笑。黃色小卡通蟲子站在另一側肩膀上得意跳舞。風格：溫暖柔和採光、簡約黃色攝影棚背景、乾淨舒適。</pre>
+        <div class="note red"><strong>生成上的現實限制：</strong>同一提示詞仍可能產生不同服裝、臉部或角色細節。做剪輯素材時建議生成數個版本，讓 Codex 有足夠片段可挑，而不是期待第一支生成影片每一秒都完全正確。</div>
+      </div>
+    </section>
+
+    <section id="codex">
+      <div class="wrap">
+        <h2>04｜打開 Codex，用文字請它準備剪輯專案</h2>
+        <p class="lead">你不需要懂程式。先建立一個空資料夾並用 Codex 開啟，再把下面的文字依序貼給 Codex，它會帶你完成設定。</p>
+
+        <div class="step"><div class="num">1</div><div>
+          <h3>建立一個空資料夾，再用 Codex 開啟</h3>
+          <p>在桌面按右鍵建立新資料夾，名稱可以叫「Larva短影音」。接著打開 Codex，選擇這個資料夾作為目前專案。</p>
+          <div class="note"><strong>只要記住：</strong>Codex 上方顯示的資料夾名稱是「Larva短影音」就可以，不需要自己輸入任何終端指令。</div>
+        </div></div>
+
+        <div class="step"><div class="num">2</div><div>
+          <h3>把這段文字貼給 Codex，請它準備環境</h3>
+          <div class="copy-title">給 Codex 的文字</div>
+          <pre>這是一個新的 AI 短影音剪輯專案。
+請幫我完成以下準備：
+1. 檢查 FFmpeg、Node.js 與 Remotion 是否可以使用。
+2. 缺少的工具請先告訴我用途，再詢問我是否同意安裝。
+3. 幫我建立可以啟動 Remotion 的專案設定。
+4. 完成後請逐項測試，並用簡單中文告訴我結果。
+
+請不要刪除或移動我之後放進來的原始影片。</pre>
+          <p>Codex 會自行檢查需要的工具。如果畫面跳出「是否同意安裝」，確認內容後按同意即可。</p>
+        </div></div>
+
+        <div class="step"><div class="num">3</div><div>
+          <h3>再請 Codex 建立素材與輸出資料夾</h3>
+          <div class="copy-title">給 Codex 的文字</div>
+          <pre>請在目前專案建立：
+- public：放我的 FacePlay 原始影片、圖片和音效
+- output：放預覽版與正式版影片
+- src：放剪輯時間軸
+
+請保留原始檔，未經我同意不要覆寫。
+建立完成後，請直接告訴我影片應該放進哪個資料夾。</pre>
+          <p>完成後，你只需要把 FacePlay 下載的影片複製到 <code>public</code> 資料夾。</p>
+        </div></div>
+
+        <div class="step"><div class="num">4</div><div>
+          <h3>影片放好後，請 Codex 先檢查素材</h3>
+          <div class="copy-title">給 Codex 的文字</div>
+          <pre>我已經把 FacePlay 生成的影片放進 public。
+請先檢查所有影片是否能正常播放，整理每支影片的長度、尺寸與內容，
+再製作接觸表讓我查看。
+
+這一步先不要剪輯，也不要輸出正式版。
+請先告訴我你建議怎麼剪，等我同意後再開始。</pre>
+          <p>看到 Codex 回覆素材清單與剪輯建議後，再把下一節的「剪輯需求提示詞」貼給它。</p>
+        </div></div>
+
+        <div class="note"><strong>如果 Codex 說找不到 package.json：</strong>不用自己除錯，直接貼上：「請確認目前開啟的是不是正確專案資料夾；如果缺少 package.json，請幫我在目前專案建立並測試，不要到其他資料夾尋找。」</div>
+      </div>
+    </section>
+
+
+    <section id="editing">
+      <div class="wrap">
+        <h2>05｜告訴 Codex：你想把影片剪成什麼樣子</h2>
+        <p class="lead">影片放好後，把下面這段需求貼給 Codex。你也可以把秒數、字幕與結尾文字改成自己的版本。</p>
+        <div class="copy-title">第一版剪輯提示詞</div>
+        <pre>FacePlay 生成的影片都放在 public。每支影片約 15 秒，影片內已包含多個分鏡。請先盤點所有素材、製作接觸表，找出每支影片中的 Hook、紅色提案、黃色提案、Larva 動作與換裝時點；先提出剪輯策略，不要直接輸出正式版。
+
+成片需求：
+1. 35～40 秒，直式 9:16，適用 TikTok、Instagram Reels、YouTube Shorts。
+2. 前 2 秒使用紅黃服裝同框，字幕「今天穿紅色還是黃色？」。
+3. 中段交錯使用紅黃角色搶按鈕、誇張反應、碰撞與換裝。
+4. 故事：提出選擇 → 紅黃對決 → 換裝展示 → 兩種結果並列。
+5. 使用短鏡頭、突然切換、局部放大與適量音效強化笑點。
+6. 字幕只使用「紅？」、「黃？」、「選哪個？」；不要使用 Whisper 的錯誤辨識。
+7. 字幕不可遮住人物臉部，並避開短影音平台底部操作區。
+8. 結尾約 3 秒顯示 LARVA、#LarvaOfficial 與留言引導。
+9. 先輸出 720×1280 完整預覽；我同意後再輸出 1080×1920 正式版。
+10. 原始素材不可移動、刪除或覆寫。</pre>
+      </div>
+    </section>
+
+    <section id="revise">
+      <div class="wrap">
+        <h2>06｜成片不對？直接用文字請 Codex 修改</h2>
+        <p class="lead">看到不對的地方時，截圖並告訴 Codex「哪個位置、現在是什麼、你希望改成什麼」。描述越明確，修改通常越準。</p>
+        <div class="grid">
+          <div class="card"><h3>字幕遮臉</h3><div class="wrong">不清楚：字幕再低一點。</div><div class="right">清楚：00:03 的「黃？」遮住額頭。請將人物鏡頭字幕移至下方安全區，底部保留平台操作空間，其他畫面不變。</div></div>
+          <div class="card"><h3>服裝顏色錯誤</h3><div class="wrong">不清楚：衣服錯了。</div><div class="right">清楚：黃色 Larva 按下按鈕後目前接到紅衣。請改用黃色服裝片段，只修改該鏡頭與必要轉場。</div></div>
+          <div class="card"><h3>左右結果錯誤</h3><div class="right">最後並列畫面請固定左側紅色服裝、右側黃色服裝，維持兩側相同尺寸與停留時間。</div></div>
+          <div class="card"><h3>刪除多餘文字</h3><div class="right">刪除「換裝！」與「換裝完成！」，畫面、聲音與時間不變；確認沒有殘留文字框。</div></div>
+        </div>
+        <figure class="figure"><img src="assets/03-yellow-change.png" alt="黃色角色按鈕後接黃色服裝"><figcaption>用因果關係描述：黃蟲按下按鈕後，下一鏡應該是黃色服裝。</figcaption></figure>
+        <figure class="figure"><img src="assets/04-red-yellow-split.png" alt="結果並列左紅右黃"><figcaption>用位置描述：左紅、右黃，比「兩邊顏色不對」更容易精準修改。</figcaption></figure>
+      </div>
+    </section>
+
+    <section id="qa">
+      <div class="wrap">
+        <h2>07｜確認沒問題，就請 Codex 輸出正式影片</h2>
+        <p class="lead">先把預覽從頭看到尾。只要字幕、服裝與故事順序都正確，就把下面這段文字貼給 Codex。</p>
+        <div class="copy-title">給 Codex 的文字</div>
+        <pre>我已經看過預覽，內容沒有問題。
+請幫我輸出適合 TikTok、Instagram Reels 和 YouTube Shorts 的直式正式版。
+
+完成後請幫我檢查：
+- 影片能不能正常播放
+- 字幕有沒有遮住臉
+- 聲音有沒有突然太大或中斷
+- 最後的品牌名稱和 hashtag 是否清楚
+
+請把正式影片放進 output 資料夾，並告訴我檔案名稱。</pre>
+        <div class="note"><strong>完成了！</strong>到 <code>output</code> 資料夾找到正式影片，就可以上傳到短影音平台。發布前記得再次確認音樂、角色圖片及其他素材擁有可使用的權利。</div>
+      </div>
+    </section>
+
+  </main>
+  <footer><div class="wrap">AFA DigitalLab｜從零到一，讓 AI 成為你的日常超能力。</div></footer>
+</body>
+</html>
+
+
